@@ -1,0 +1,85 @@
+// SAMPLE DATA: approximate values per 100 g (edible portion, cooked where stated), compiled from
+// common public references (USDA FoodData Central, IFCT). Real products vary by brand and recipe.
+// Tuple: [name, category, kcal, protein, carbs, fat, servingGrams, servingUnit, servingLabel]
+const rows = [
+  // Fruits
+  ['Banana', 'Fruits', 89, 1.1, 22.8, 0.3, 118, 'medium', '1 medium banana'],
+  ['Apple', 'Fruits', 52, 0.3, 13.8, 0.2, 182, 'medium', '1 medium apple'],
+  ['Orange', 'Fruits', 47, 0.9, 11.8, 0.1, 131, 'medium', '1 medium orange'],
+  ['Mango', 'Fruits', 60, 0.8, 15, 0.4, 165, 'cup', '1 cup sliced'],
+  ['Papaya', 'Fruits', 43, 0.5, 10.8, 0.3, 145, 'cup', '1 cup cubed'],
+  ['Watermelon', 'Fruits', 30, 0.6, 7.6, 0.2, 152, 'cup', '1 cup diced'],
+  ['Grapes', 'Fruits', 69, 0.7, 18.1, 0.2, 151, 'cup', '1 cup'],
+  ['Pomegranate Arils', 'Fruits', 83, 1.7, 18.7, 1.2, 87, 'half cup', '1/2 cup arils'],
+  // Vegetables
+  ['Spinach (raw)', 'Vegetables', 23, 2.9, 3.6, 0.4, 30, 'cup', '1 cup raw'],
+  ['Broccoli (steamed)', 'Vegetables', 35, 2.4, 7.2, 0.4, 156, 'cup', '1 cup chopped'],
+  ['Carrot', 'Vegetables', 41, 0.9, 9.6, 0.2, 61, 'medium', '1 medium carrot'],
+  ['Tomato', 'Vegetables', 18, 0.9, 3.9, 0.2, 123, 'medium', '1 medium tomato'],
+  ['Cucumber', 'Vegetables', 15, 0.7, 3.6, 0.1, 104, 'cup', '1 cup sliced'],
+  ['Potato (boiled)', 'Vegetables', 87, 1.9, 20.1, 0.1, 150, 'medium', '1 medium potato'],
+  ['Sweet Potato (baked)', 'Vegetables', 90, 2, 20.7, 0.2, 130, 'medium', '1 medium sweet potato'],
+  ['Cauliflower (cooked)', 'Vegetables', 23, 1.8, 4.1, 0.5, 124, 'cup', '1 cup'],
+  ['Bhindi / Okra (cooked)', 'Vegetables', 22, 1.9, 4.5, 0.2, 100, 'katori', '1 small katori'],
+  // Grains
+  ['White Rice (cooked)', 'Grains', 130, 2.7, 28.2, 0.3, 158, 'cup', '1 cup cooked'],
+  ['Brown Rice (cooked)', 'Grains', 112, 2.3, 23.5, 0.8, 195, 'cup', '1 cup cooked'],
+  ['Rolled Oats (dry)', 'Grains', 379, 13.2, 67.7, 6.5, 40, 'half cup', '1/2 cup dry'],
+  ['Chapati / Roti (whole wheat)', 'Grains', 293, 10, 52, 5, 40, 'piece', '1 medium chapati'],
+  ['Plain Paratha', 'Grains', 316, 7, 45, 12, 80, 'piece', '1 paratha'],
+  ['Whole Wheat Bread', 'Grains', 247, 13, 41, 3.4, 28, 'slice', '1 slice'],
+  ['Quinoa (cooked)', 'Grains', 120, 4.4, 21.3, 1.9, 185, 'cup', '1 cup cooked'],
+  ['Pasta (cooked)', 'Grains', 158, 5.8, 30.9, 0.9, 140, 'cup', '1 cup cooked'],
+  // Protein
+  ['Egg (boiled)', 'Protein', 155, 12.6, 1.1, 10.6, 50, 'large', '1 large egg'],
+  ['Egg White', 'Protein', 52, 10.9, 0.7, 0.2, 33, 'large', '1 large egg white'],
+  ['Chicken Breast (cooked)', 'Protein', 165, 31, 0, 3.6, 120, 'fillet', '1 fillet'],
+  ['Salmon (cooked)', 'Protein', 206, 22.1, 0, 12.4, 100, 'fillet', '1 small fillet'],
+  ['Tuna (canned in water)', 'Protein', 116, 25.5, 0, 0.8, 100, 'can', '1 can, drained'],
+  ['Prawns (cooked)', 'Protein', 99, 24, 0.2, 0.3, 100, 'serving', '100 g serving'],
+  ['Tofu (firm)', 'Protein', 144, 17.3, 2.8, 8.7, 100, 'serving', '100 g serving'],
+  // Dairy
+  ['Whole Milk', 'Dairy', 61, 3.2, 4.8, 3.3, 244, 'cup', '1 cup'],
+  ['Curd / Plain Yogurt', 'Dairy', 61, 3.5, 4.7, 3.3, 245, 'cup', '1 cup'],
+  ['Greek Yogurt (non-fat)', 'Dairy', 59, 10.2, 3.6, 0.4, 170, 'cup', '3/4 cup'],
+  ['Paneer', 'Dairy', 296, 18.3, 3.6, 22.9, 50, 'serving', '50 g (about 4 cubes)'],
+  ['Buttermilk (Chaas)', 'Dairy', 40, 3.3, 4.8, 0.9, 245, 'glass', '1 glass'],
+  ['Cheddar Cheese', 'Dairy', 403, 24.9, 1.3, 33.1, 28, 'slice', '1 slice'],
+  ['Ghee', 'Dairy', 900, 0, 0, 100, 5, 'tsp', '1 tsp'],
+  // Nuts & seeds
+  ['Almonds', 'Nuts & Seeds', 579, 21.2, 21.6, 49.9, 28, 'handful', '1 handful (~23 nuts)'],
+  ['Walnuts', 'Nuts & Seeds', 654, 15.2, 13.7, 65.2, 28, 'handful', '1 handful (~14 halves)'],
+  ['Cashews', 'Nuts & Seeds', 553, 18.2, 30.2, 43.9, 28, 'handful', '1 handful (~18 nuts)'],
+  ['Peanuts (roasted)', 'Nuts & Seeds', 567, 25.8, 16.1, 49.2, 28, 'handful', '1 handful'],
+  ['Chia Seeds', 'Nuts & Seeds', 486, 16.5, 42.1, 30.7, 12, 'tbsp', '1 tbsp'],
+  ['Flax Seeds', 'Nuts & Seeds', 534, 18.3, 28.9, 42.2, 10, 'tbsp', '1 tbsp'],
+  ['Pumpkin Seeds', 'Nuts & Seeds', 559, 30.2, 10.7, 49.1, 28, 'handful', '1 handful'],
+  ['Peanut Butter', 'Nuts & Seeds', 588, 25, 20, 50, 32, 'tbsp', '2 tbsp'],
+  // Indian dishes
+  ['Idli', 'Indian Dishes', 142, 4.5, 30, 0.4, 40, 'piece', '1 medium idli'],
+  ['Plain Dosa', 'Indian Dishes', 168, 3.9, 29.5, 3.7, 90, 'piece', '1 medium dosa'],
+  ['Masala Dosa', 'Indian Dishes', 177, 3.7, 26, 6.5, 150, 'piece', '1 masala dosa'],
+  ['Sambar', 'Indian Dishes', 49, 2.6, 7, 1.2, 150, 'katori', '1 katori (150 g)'],
+  ['Toor Dal (cooked, tadka)', 'Indian Dishes', 116, 6.8, 16.5, 2.6, 150, 'katori', '1 katori (150 g)'],
+  ['Moong Dal (cooked)', 'Indian Dishes', 105, 7, 19, 0.4, 150, 'katori', '1 katori (150 g)'],
+  ['Rajma (cooked)', 'Indian Dishes', 130, 8.7, 22.8, 0.5, 150, 'katori', '1 katori (150 g)'],
+  ['Chickpeas / Chole (boiled)', 'Indian Dishes', 164, 8.9, 27.4, 2.6, 150, 'katori', '1 katori (150 g)'],
+  ['Palak Paneer', 'Indian Dishes', 155, 7.5, 5.5, 11.5, 150, 'katori', '1 katori (150 g)'],
+  ['Chicken Biryani', 'Indian Dishes', 160, 8.5, 19, 5.5, 250, 'plate', '1 plate (250 g)'],
+  // Other
+  ['Olive Oil', 'Other', 884, 0, 0, 100, 14, 'tbsp', '1 tbsp'],
+  ['Honey', 'Other', 304, 0.3, 82.4, 0, 21, 'tbsp', '1 tbsp'],
+  ['Dark Chocolate (70%)', 'Other', 598, 7.8, 45.9, 42.6, 28, 'square', '28 g (about 3 squares)'],
+];
+
+export const foods = rows.map(([name, category, kcal, p, c, f, servingGrams, servingUnit, servingLabel]) => ({
+  name,
+  category,
+  caloriesPer100g: kcal,
+  proteinPer100g: p,
+  carbsPer100g: c,
+  fatPer100g: f,
+  servingGrams,
+  servingUnit,
+  servingLabel,
+}));
